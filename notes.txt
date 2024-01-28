@@ -1,0 +1,53 @@
+
+openssl req -new -key abhi.key -out abhi.csr -subj "/CN=abhi/O=dev/O=example.org"
+abhi.csr
+abhi.key
+
+ openssl x509 -req -CA ~/.minikube/ca.crt -CAkey ~/.minikube/ca.key -CAcreateserial -days 730 -in abhi.csr -out abhi.crt
+
+Signature ok
+subject=/CN=abhi/O=dev/O=example.org
+Getting CA Private Key
+
+kubectl config set-credentials abhi --client-certificate=abhi.crt --client-key=abhi.key 
+User "abhi" set.
+
+
+kubectl config set-context abhi-minikube --cluster=minikube --user=abhi --namespace=default
+Context "abhi-minikube" created.
+
+r help and examples
+himu@Abhis-Air AbhiRBAC % kubectl config get-contexts
+CURRENT   NAME             CLUSTER          AUTHINFO         NAMESPACE
+          abhi-minikube    minikube         abhi             default
+          docker-desktop   docker-desktop   docker-desktop   
+*         minikube         minikube         minikube         default
+
+
+kubectl config use-context abhi-minikube
+Switched to context "abhi-minikube".
+
+
+kubectl get pods
+Error from server (Forbidden): pods is forbidden: User "abhi" cannot list resource "pods" in API group "" in the namespace "default"
+
+
+ kubectl config use-context minikub
+
+Create roles and bind the roles to users
+
+roles.yml , roles-binding.yml
+
+
+kubectl config use-context abhi-minikube
+Switched to context "abhi-minikube".
+himu@Abhis-Air AbhiRBAC % kubectl get pods
+NAME                                                 READY   STATUS    RESTARTS        AGE
+grafana-86cb76f95f-vrvbs                             1/1     Running   1 (5h35m ago)   44h
+nginx                                                1/1     Running   0               5h35m
+prometheus-alertmanager-0                            1/1     Running   1 (5h35m ago)   44h
+prometheus-kube-state-metrics-745b475957-pctg6       1/1     Running   1 (5h35m ago)   44h
+prometheus-prometheus-node-exporter-4xsn6            1/1     Running   1 (5h35m ago)   44h
+
+
+
